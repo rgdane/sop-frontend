@@ -1,0 +1,11 @@
+src/.next
+src/.env
+src/node_modules
+src/dist
+src/coverage
+src/pnpm-workspace.yaml
+src/pnpm-lock.yaml
+src/package-lock.json
+src/pnpm-lock.yaml
+src/.env.dev
+Dockerfile.copy

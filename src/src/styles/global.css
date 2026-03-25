@@ -1,0 +1,371 @@
+@import "tailwindcss";
+@import "./tiptap.css";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --color-primary: #ff6757;
+  --color-warning: #e6b905;
+  --color-success: #22c55e;
+  --obisidan: #141414;
+  --charcoal: #1A1A1A;
+  --slate-panel: #242424;
+  --card-dark: #242424;
+  --accent-coral: #ff6757;
+  --light-bg: #F8F9FA;
+}
+
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-warning: var(--color-warning);
+  --color-success: var(--color-success);
+  --color-slate-panel: var(--slate-panel);
+  --color-obisidan: var(--obisidan);
+  --color-charcoal: var(--charcoal);
+  --color-card-dark: var(--card-dark);
+  --color-accent-coral: var(--accent-coral);
+  --color-light-bg: var(--light-bg);
+  --font-inter: "Inter", sans-serif;
+}
+
+body {
+  font-family: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
+  background-color: #f1f5f9;
+  color: #1a1a1a;
+  transition: background-color 200ms, color 200ms;
+}
+
+.hero-mesh-gradient {
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(255, 103, 87, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(255, 103, 87, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(255, 103, 87, 0.1) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(255, 103, 87, 0.05) 0px, transparent 50%);
+  border: 1px solid rgba(255, 103, 87, 0.1);
+}
+
+.dark .hero-mesh-gradient {
+  background-color: #1A1A1A;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(255, 103, 87, 0.1) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(255, 103, 87, 0.03) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(255, 103, 87, 0.08) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(255, 103, 87, 0.03) 0px, transparent 50%);
+  border: 1px solid rgba(255, 103, 87, 0.15);
+}
+
+.glass-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.dark .glass-card {
+  background-color: #242424;
+  border-color: rgb(51 65 85 / 0.5);
+}
+
+.kpi-card-shadow {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dark .kpi-card-shadow {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
+}
+
+.dark body {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background-color: #2a2a2a;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #4a4a4a;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #5a5a5a;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: #6b7280;
+}
+
+.dark ::-webkit-scrollbar-thumb:active {
+  background-color: #6a6a6a;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #f3f4f6;
+}
+
+.dark ::-webkit-scrollbar-corner {
+  background-color: #2a2a2a;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(209 213 219) rgb(243 244 246);
+}
+
+.dark * {
+  scrollbar-color: rgb(74 74 74) rgb(42 42 42);
+}
+
+@layer base {
+
+  input:-webkit-autofill,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    caret-color: inherit;
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    transition: background-color 99999s, color 99999s !important;
+  }
+
+  :root input:-webkit-autofill {
+    -webkit-text-fill-color: #000 !important;
+  }
+
+  .dark input:-webkit-autofill {
+    -webkit-text-fill-color: #fff !important;
+  }
+}
+
+.placeholder-gray::placeholder {
+  color: #555 !important;
+}
+
+/* ====================
+   ANT DESIGN OVERRIDES
+   ==================== */
+
+.ant-layout-sider-trigger svg {
+  color: #1a1a1a;
+}
+
+.dark .ant-layout-sider-trigger svg {
+  color: white;
+}
+
+.ant-picker-suffix {
+  color: #aeaeae !important;
+}
+
+.ant-picker-suffix:hover {
+  color: #6b7280 !important;
+}
+
+.ant-picker:hover .ant-picker-suffix {
+  color: #6b7280 !important;
+}
+
+.ant-divider {
+  border-color: #d1d5db;
+}
+
+.dark .ant-divider {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.ant-table-cell {
+  white-space: normal !important;
+  word-break: break-word;
+  font-weight: normal;
+}
+
+.ant-table-header .ant-table-cell {
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+.ant-table-tbody .ant-table-cell {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+.ant-drawer .ant-row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+div.ant-drawer-content-wrapper>div>div.ant-drawer-body {
+  overflow-y: hidden;
+}
+
+.custom-checkbox .ant-checkbox-inner {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  scale: 1.3;
+}
+
+/* Fix Tabs ink bar visibility in light mode for top/bottom position */
+.ant-tabs-top>.ant-tabs-nav .ant-tabs-ink-bar,
+.ant-tabs-bottom>.ant-tabs-nav .ant-tabs-ink-bar {
+  background-color: #ff6757 !important;
+  height: 2px !important;
+}
+
+/* Fix Tabs nav border (track line) in light mode for top/bottom position */
+.ant-tabs-top>.ant-tabs-nav::before,
+.ant-tabs-bottom>.ant-tabs-nav::before {
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.dark .ant-tabs-top>.ant-tabs-nav::before,
+.dark .ant-tabs-bottom>.ant-tabs-nav::before {
+  border-bottom: 1px solid #3a3a3a !important;
+}
+
+/* ====================
+   GANTT TIMELINE STYLES
+   ==================== */
+
+.gantt_layout_cell {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.dark .gantt_layout_cell {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.gantt_layout_content {
+  background-color: inherit;
+}
+
+.dark .gantt_layout_content {
+  background-color: #242424 !important;
+}
+
+.gantt_cell,
+.gantt_cell_tree {
+  font-weight: 500;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .gantt_cell,
+.dark .gantt_cell_tree {
+  color: white;
+  font-weight: 500;
+}
+
+.gantt_scale_cell {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.dark .gantt_scale_cell {
+  background-color: #2a2a2a !important;
+  color: white !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.gantt_grid_head_cell {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.dark .gantt_grid_head_cell {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.gantt_grid_head_add .gantt_grid_head_duration {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.dark .gantt_grid_head_add .gantt_grid_head_duration {
+  background-color: #2a2a2a !important;
+  color: white !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.gantt_grid_head_add {
+  background-color: #ef4444 !important;
+  width: 0 !important;
+}
+
+.gantt_grid_scale {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.dark .gantt_grid_scale {
+  background-color: #2a2a2a !important;
+  color: white !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.gantt_task_scale {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.dark .gantt_task_scale {
+  background-color: #2a2a2a !important;
+  color: white !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.gantt_row_task {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.dark .gantt_row_task {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: #2a2a2a !important;
+}
+
+.gantt_task_row {
+  background-color: transparent !important;
+}
+
+.dark .gantt_task_row {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.gantt_layout_cell_border_right {
+  background-color: transparent !important;
+}
+
+.gantt_task_cell {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.dark .gantt_task_cell {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.gantt_cell:has(> .gantt_add) {
+  display: none;
+}

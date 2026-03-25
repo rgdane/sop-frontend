@@ -1,0 +1,75 @@
+/* General hidden state for all animations */
+.tippy-box[data-state="hidden"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* shift-away */
+.tippy-box[data-animation="shift-away"][data-state="visible"] {
+  opacity: 1;
+  transform: translate(0);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.tippy-box[data-animation="shift-away"][data-placement^="top"][data-state="hidden"] {
+  transform: translateY(-5px);
+}
+
+.tippy-box[data-animation="shift-away"][data-placement^="bottom"][data-state="hidden"] {
+  transform: translateY(5px);
+}
+
+.tippy-box[data-animation="shift-away"][data-placement^="left"][data-state="hidden"] {
+  transform: translateX(-5px);
+}
+
+.tippy-box[data-animation="shift-away"][data-placement^="right"][data-state="hidden"] {
+  transform: translateX(5px);
+}
+
+/* shift-toward */
+.tippy-box[data-animation="shift-toward"][data-state="visible"] {
+  opacity: 1;
+  transform: translate(0);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.tippy-box[data-animation="shift-toward"][data-placement^="top"][data-state="hidden"] {
+  transform: translateY(5px);
+}
+
+.tippy-box[data-animation="shift-toward"][data-placement^="bottom"][data-state="hidden"] {
+  transform: translateY(-5px);
+}
+
+.tippy-box[data-animation="shift-toward"][data-placement^="left"][data-state="hidden"] {
+  transform: translateX(5px);
+}
+
+.tippy-box[data-animation="shift-toward"][data-placement^="right"][data-state="hidden"] {
+  transform: translateX(-5px);
+}
+
+/* scale */
+.tippy-box[data-animation="scale"][data-state="visible"] {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.tippy-box[data-animation="scale"][data-state="hidden"] {
+  transform: scale(0.95);
+}
+
+/* perspective */
+.tippy-box[data-animation="perspective"][data-state="visible"] {
+  opacity: 1;
+  transform: perspective(800px) rotateX(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform-origin: top;
+}
+
+.tippy-box[data-animation="perspective"][data-state="hidden"] {
+  transform: perspective(800px) rotateX(-30deg);
+  transform-origin: top;
+}

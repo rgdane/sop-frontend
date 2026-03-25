@@ -1,0 +1,48 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - "--no-cache"
+      - "-t"
+      - >-
+        asia-southeast2-docker.pkg.dev/jalan-kerja-prod/jalan-kerja/$_SERVICE_NAME:$COMMIT_SHA
+      - "--build-arg"
+      - "APP_ENV=$_APP_ENV"
+      - .
+      - "-f"
+      - Dockerfile
+    id: Build
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - >-
+        asia-southeast2-docker.pkg.dev/jalan-kerja-prod/jalan-kerja/$_SERVICE_NAME:$COMMIT_SHA
+    id: Push
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    args:
+      - run
+      - services
+      - update
+      - $_SERVICE_NAME
+      - "--platform=managed"
+      - >-
+        --image=asia-southeast2-docker.pkg.dev/jalan-kerja-prod/jalan-kerja/$_SERVICE_NAME:$COMMIT_SHA
+      - >-
+        --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID,$_LABELS
+      - "--region=$_DEPLOY_REGION"
+      - "--quiet"
+    id: Deploy
+    entrypoint: gcloud
+images:
+  - >-
+    asia-southeast2-docker.pkg.dev/jalan-kerja-prod/jalan-kerja/$_SERVICE_NAME:$COMMIT_SHA
+options:
+  substitutionOption: ALLOW_LOOSE
+  logging: CLOUD_LOGGING_ONLY
+substitutions:
+  _DEPLOY_REGION: asia-southeast1
+  _PLATFORM: managed
+  _LABELS: gcb-trigger-id=89ad54ff-cbb1-4caf-96c2-6bc85568a08f
+  _TRIGGER_ID: 89ad54ff-cbb1-4caf-96c2-6bc85568a08f
+  _SERVICE_NAME: jk-react
+  _APP_ENV: prod

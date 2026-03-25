@@ -1,0 +1,19 @@
+.apexcharts-datalabels-group text {
+  fill: rgb(0 0 0) !important;
+}
+
+.dark .apexcharts-datalabels-group text {
+  fill: rgb(255 255 255) !important;
+}
+
+.dark .apexcharts-legend-text,
+.dark .apexcharts-legend .apexcharts-legend-text,
+.dark .apexcharts-legend-series .apexcharts-legend-text {
+  fill: rgb(255 255 255) !important;
+  color: rgb(255 255 255) !important; /* Sometimes it's color, not fill */
+}
+
+.dark .apexcharts-menu,
+.dark .apexcharts-tooltip {
+  color: rgb(0 0 0) !important;
+}
