@@ -1,16 +1,16 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { TableBuilder } from "@/components/fragments/builder/TableBuilder";
-import { useSopActions } from "../hook/useSop";
+import ColumnSearch from "@/components/ui/Table/ColumnSearch";
+import { renderTag } from "@/components/ui/Tag";
+import { MODULES } from "@/constants/modules";
+import { useDivisionActions } from "@/features/division/hook/useDivision";
+import { useFilterRBAC } from "@/hooks/useFilterRBAC";
+import { useUrlFilter } from "@/hooks/useUrlFilter";
 import { Sop } from "@/types/data/sop.types";
 import { CustomPagination, TableBuilderProps } from "@/types/props/table.types";
-import { MODULES } from "@/constants/modules";
-import ColumnSearch from "@/components/ui/Table/ColumnSearch";
-import { useFilterRBAC } from "@/hooks/useFilterRBAC";
-import { useDivisionActions } from "@/features/division/hook/useDivision";
-import { useUrlFilter } from "@/hooks/useUrlFilter";
-import { renderTag } from "@/components/ui/Tag";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSopActions } from "../hook/useSop";
 
 export default function SopList() {
   const router = useRouter();
@@ -23,11 +23,12 @@ export default function SopList() {
     bulkCreateSops,
     bulkUpdateSops,
   } = useSopActions();
-  const { divisions: divisionsData } = useDivisionActions();
+  const { fetchDivisions } = useDivisionActions();
 
   const [sop, setSop] = useState<Sop[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState(false);
+  const [divisionsData, setDivisionsData] = useState<any[]>([]);
 
   const {
     filter: queryParam,
@@ -42,6 +43,7 @@ export default function SopList() {
     : "/dashboard/master/sop";
 
   const _PAGESIZE = 20;
+
   const loadSops = async (cursor = 0) => {
     setLoading(true);
     try {
@@ -58,11 +60,16 @@ export default function SopList() {
   const loadDatas = async (cursor = 0) => {
     setLoading(true);
     try {
-      const [{ data, total }] = await Promise.all([
+      // Panggil fetchSops dan fetchDivisions secara bersamaan menggunakan Promise.all
+      const [sopRes, divisionRes] = await Promise.all([
         fetchSops({ preload: true, cursor, limit: _PAGESIZE, ...queryParam }),
+        // Memanggil fetchDivisions tanpa pagination/limit khusus agar semua divisi terambil (opsional bisa ditambah limit besar)
+        fetchDivisions({ limit: 100 }),
       ]);
-      setSop(data);
-      setTotal(total ?? 0);
+
+      setSop(sopRes.data);
+      setTotal(sopRes.total ?? 0);
+      setDivisionsData(divisionRes || []); // Set data divisi ke state
     } finally {
       setLoading(false);
     }
@@ -127,7 +134,7 @@ export default function SopList() {
 
   const divisionOptions = divisionsData.map((d) => ({
     label: d.name,
-    value: d.id,
+    value: d.id, // Sesuaikan properti id/value sesuai dengan balikan API Divisi
   }));
 
   const columns: TableBuilderProps<Sop>["columns"] = [
@@ -146,7 +153,7 @@ export default function SopList() {
           return false;
         },
         onReset: () => {
-          resetUrlFilter()
+          resetUrlFilter();
           setQueryParam({ code: "" });
           return false;
         },
@@ -166,7 +173,7 @@ export default function SopList() {
           return false;
         },
         onReset: () => {
-          resetUrlFilter()
+          resetUrlFilter();
           setQueryParam({ name: "" });
           return false;
         },
@@ -181,7 +188,11 @@ export default function SopList() {
       placeholder: "Pilih divisi",
       options: divisionOptions,
       rules: [{ required: true, message: "Divisi wajib diisi" }],
-      renderCell: (value: any) => value.map((d: any) => renderTag(d.name)) || "-",
+      // Tambahkan default value array kosong jika value undefined agar .map tidak error
+      renderCell: (value: any) =>
+        value && Array.isArray(value)
+          ? value.map((d: any) => renderTag(d.name))
+          : "-",
       ...ColumnSearch("Cari divisi", {
         mode: "options",
         selectOptions: divisionOptions,
@@ -199,14 +210,19 @@ export default function SopList() {
     },
   ];
 
+  // Load awal ketika komponen di-mount
   useEffect(() => {
     loadDatas();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Memantau perubahan filter URL
   useEffect(() => {
+    // Hindari reset dan pemanggilan ganda jika loadDatas baru saja dipanggil
     setCurrentPage(1);
     setCurrentIndex(0);
     loadSops(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryParam]);
 
   return (

@@ -1,142 +1,112 @@
 "use client";
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+
 import { useToast } from "@/components/providers/ToastProvider";
-import { bulkCreateDivisions, bulkDeleteDivisions, bulkUpdateDivisions, createDivision, deleteDivision, fetchDivisionById, fetchDivisions, updateDivision } from '../services/divisionGraphService';
+import { divisionService } from "@/features/division/services/divisionGraphService";
+import { Division } from "@/types/data/division.types";
 
 export const useDivisionActions = () => {
-  const queryClient = useQueryClient();
   const [toast] = useToast();
-  const [divisionId, setDivisionId] = useState<number | null>(null);
-  const [divisionParams, setDivisionParams] = useState<Record<string, any>>({})
 
-  const fetchDivisionsQuery = useQuery({
-    queryKey: ['divisions', divisionParams],
-    queryFn: () => fetchDivisions(divisionParams),
-    staleTime: 5 * 60 * 1000,
-  });
+  const fetchDivisions = async (
+    params: Record<string, any> = {}
+  ): Promise<Division[]> => {
+    const res = await divisionService.local.getAll(params);
+    return res.data.data;
+  };
 
-  const fetchDivisionByIdQuery = useQuery({
-    queryKey: ['division', divisionId],
-    queryFn: async () => {
-      return await fetchDivisionById(divisionId!, divisionParams);
-    },
-    enabled: !!divisionId,
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const createDivisionMutation = useMutation({
-    mutationFn: createDivision,
-    onSuccess: () => {
-      toast.success({ message: "Berhasil membuat data" });
-      queryClient.invalidateQueries({ queryKey: ['divisions', divisionParams] });
-    },
-    onError: (err: any) => {
+  const deleteDivision = async (id: number) => {
+    try {
+      await divisionService.local.remove(id);
+      toast.success({ message: "Berhasil menghapus division" });
+    } catch (err: any) {
       toast.error({
-        message: "Gagal membuat data",
-        description: err?.response?.data?.error,
+        message: "Gagal menghapus data division",
+        description: err.response.data.error,
       });
-    },
-  });
+      throw err;
+    }
+  };
 
-  const updateDivisionMutation = useMutation({
-    mutationFn: ({ id, payload }: { id: number; payload: any }) => updateDivision(id, payload),
-    onSuccess: () => {
-      toast.success({ message: "Berhasil mengubah data" });
-      queryClient.invalidateQueries({ queryKey: ['divisions', divisionParams] });
-      queryClient.invalidateQueries({ queryKey: ['division'] });
-    },
-    onError: (err: any) => {
+  const createDivision = async (payload: any) => {
+    try {
+      await divisionService.local.post(payload);
+      toast.success({ message: `Berhasil membuat ${payload.name}` });
+    } catch (err: any) {
       toast.error({
-        message: "Gagal mengubah data",
-        description: err?.response?.data?.error,
+        message: "Gagal membuat data division",
+        description: err.response.data.error,
       });
-    },
-  });
+      throw err;
+    }
+  };
 
-  const deleteDivisionMutation = useMutation({
-    mutationFn: deleteDivision,
-    onSuccess: () => {
-      toast.success({ message: "Berhasil menghapus data" });
-      queryClient.invalidateQueries({ queryKey: ['divisions', divisionParams] });
-    },
-    onError: (err: any) => {
+  const updateDivision = async (id: number, payload: any) => {
+    try {
+      await divisionService.local.update(id, payload);
+      toast.success({ message: `Berhasil mengubah ${payload.name}` });
+    } catch (err: any) {
       toast.error({
-        message: "Gagal menghapus data",
-        description: err?.response?.data?.error,
+        message: "Gagal mengubah data division",
+        description: err.response.data.error,
       });
-    },
-  });
+      throw err;
+    }
+  };
 
-  const bulkCreateDivisionsMutation = useMutation({
-    mutationFn: bulkCreateDivisions,
-    onSuccess: (data, variables) => {
-      toast.success({
-        message: `Berhasil membuat ${variables.length} data`,
+  const bulkCreateDivisions = async (data: Omit<Division, "id">[]) => {
+    try {
+      await divisionService.bulkCreate(data);
+      data.map((item) => {
+        toast.success({
+          message: `Berhasil membuat ${item.name}`,
+        });
       });
-      queryClient.invalidateQueries({ queryKey: ['divisions', divisionParams] });
-    },
-    onError: (err: any) => {
+    } catch (err: any) {
       toast.error({
         message: "Gagal melakukan bulk create",
         description: err.response?.data?.error || err.message,
       });
-    },
-  });
+      throw err;
+    }
+  };
 
-  const bulkUpdateDivisionsMutation = useMutation({
-    mutationFn: ({ ids, data }: { ids: number[]; data: any }) => bulkUpdateDivisions(ids, data),
-    onSuccess: () => {
+  const bulkUpdateDivisions = async (ids: number[], data: Partial<Division>) => {
+    try {
+      await divisionService.bulkUpdate(ids, data);
       toast.success({
-        message: `Berhasil mengupdate datas`,
+        message: `Berhasil mengupdate ${ids.length} division`,
       });
-      queryClient.invalidateQueries({ queryKey: ['divisions', divisionParams] });
-    },
-    onError: (err: any) => {
+    } catch (err: any) {
       toast.error({
         message: "Gagal melakukan bulk update",
         description: err.response?.data?.error || err.message,
       });
-    },
-  });
+      throw err;
+    }
+  };
 
-  const bulkDeleteDivisionsMutation = useMutation({
-    mutationFn: ({ ids }: { ids: number[] }) => bulkDeleteDivisions(ids),
-    onSuccess: () => {
+  const bulkDeleteDivisions = async (ids: number[]) => {
+    try {
+      await divisionService.bulkDelete(ids);
       toast.success({
-        message: `Berhasil menghapus datas`,
+        message: `Berhasil menghapus ${ids.length} division`,
       });
-      queryClient.invalidateQueries({ queryKey: ['divisions', divisionParams] });
-    },
-    onError: (err: any) => {
+    } catch (err: any) {
       toast.error({
         message: "Gagal melakukan bulk delete",
         description: err.response?.data?.error || err.message,
       });
-    },
-  });
+      throw err;
+    }
+  };
 
   return {
-    // data
-    division: fetchDivisionByIdQuery.data,
-    divisions: fetchDivisionsQuery.data || [],
-    isLoadingDivisionById: fetchDivisionByIdQuery.isLoading,
-    isLoadingDivisions: fetchDivisionsQuery.isLoading,
-    isError: fetchDivisionsQuery.isError,
-    error: fetchDivisionsQuery.error,
-
-    // setter
-    setDivisionId,
-    setDivisionParams,
-
-    // query
-    fetchDivisions: fetchDivisionsQuery.refetch,
-    fetchDivisionById: fetchDivisionByIdQuery.refetch,
-    createDivision: createDivisionMutation.mutate,
-    updateDivision: (id: number, payload: any) => updateDivisionMutation.mutate({ id, payload }),
-    deleteDivision: deleteDivisionMutation.mutate,
-    bulkCreateDivisions: bulkCreateDivisionsMutation.mutate,
-    bulkUpdateDivisions: (ids: number[], data: any) => bulkUpdateDivisionsMutation.mutate({ ids, data }),
-    bulkDeleteDivisions: (ids: number[]) => bulkDeleteDivisionsMutation.mutate({ ids }),
+    fetchDivisions,
+    createDivision,
+    deleteDivision,
+    updateDivision,
+    bulkCreateDivisions,
+    bulkUpdateDivisions,
+    bulkDeleteDivisions,
   };
 };

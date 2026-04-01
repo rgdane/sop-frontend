@@ -3,79 +3,87 @@ import { useEffect, useState } from "react";
 import { useDivisionActions } from "../hook/useDivisionGraph";
 import { TableBuilder } from "@/components/fragments/builder/TableBuilder";
 import type { Division } from "@/types/data/division.types";
-import type { Department } from "@/types/data/department.types";
-import { useDepartmentActions } from "@/features/department/hook/useDepartment";
 import { getSorterInfo } from "@/lib/tableHelper";
-import { getOptions, getOptionsById } from "@/lib/getOption";
 import { renderTag } from "@/components/ui/Tag";
 
 export default function DivisionList() {
   const {
-    divisions,
-    isLoadingDivisions,
-    setDivisionParams,
-    createDivision,
-    updateDivision,
-    deleteDivision,
-    bulkCreateDivisions,
-    bulkUpdateDivisions,
-    bulkDeleteDivisions,
-  } = useDivisionActions();
-  const { fetchDepartments } = useDepartmentActions();
-  const [departments, setDepartments] = useState<Department[]>([]);
-
-  const loadDepartments = async () => {
-    try {
-      const departmentsRes = await fetchDepartments();
-      setDepartments(departmentsRes);
-    } catch (error) {
-      console.error("Failed to load departments:", error);
-    }
-  };
-
-  useEffect(() => {
-    loadDepartments();
-  }, []);
-
-  const handleCreate = async (data: Omit<Division, "id">) => {
-    createDivision(data);
-  };
-
-  const handleUpdate = async (id: number, data: Partial<Division>) => {
-    updateDivision(id, data);
-  };
-
-  const handleDelete = async (id: number) => {
-    deleteDivision(id);
-  };
-
-  const handleBulkCreate = async (data: Omit<Division, "id">[]) => {
-    bulkCreateDivisions(data);
-  };
-
-  const handleBulkUpdate = async (ids: number[], data: Partial<Division>) => {
-    bulkUpdateDivisions(ids, data);
-  };
-
-  const handleBulkDelete = async (ids: number[]) => {
-    bulkDeleteDivisions(ids);
-  };
-
-  const handleFilterDeleted = async (isDeleted: boolean) => {
-    setDivisionParams((prev) => ({ ...prev, show_deleted: isDeleted }));
-  }
-
-  const handleRestore = async (ids: number[], deletedData: Partial<Division>) => {
-    bulkUpdateDivisions(ids, { deleted_at: null });
-  }
-
-  const handleSort = (sorter: any) => {
-    setDivisionParams((prev) => ({
-      ...prev,
-      sort: sorter[0]?.column,
-      order: sorter[0]?.order,
-    }));
-  };
+      fetchDivisions,
+      createDivision,
+      deleteDivision,
+      updateDivision,
+      bulkCreateDivisions,
+      bulkUpdateDivisions,
+      bulkDeleteDivisions,
+    } = useDivisionActions();
+    const [divisions, setDivisions] = useState<Division[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [queryParam, setQueryParam] = useState<Record<string, any>>({});
+  
+    const loadDatas = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchDivisions(queryParam);
+        setDivisions(data);
+      } catch (error) {
+        console.error("Failed to load divisions:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    useEffect(() => {
+      loadDatas();
+    }, [queryParam]);
+  
+    const handleCreate = async (data: Omit<Division, "id">) => {
+      await createDivision(data);
+      await loadDatas();
+    };
+  
+    const handleUpdate = async (id: number, data: Partial<Division>) => {
+      await updateDivision(id, data);
+      await loadDatas();
+    };
+  
+    const handleDelete = async (id: number) => {
+      await deleteDivision(id);
+      await loadDatas();
+    };
+  
+    const handleBulkCreate = async (data: Omit<Division, "id">[]) => {
+      await bulkCreateDivisions(data);
+      await loadDatas();
+    };
+  
+    const handleBulkUpdate = async (ids: number[], data: Partial<Division>) => {
+      await bulkUpdateDivisions(ids, data);
+      await loadDatas();
+    };
+  
+    const handleBulkDelete = async (ids: number[]) => {
+      await bulkDeleteDivisions(ids);
+      await loadDatas();
+    };
+  
+    const handleFilterDeleted = async (isDeleted: boolean) => {
+      setQueryParam((prev) => ({ ...prev, show_deleted: isDeleted }));
+    };
+  
+    const handleRestore = async (ids: number[], deletedData: Partial<Division>) => {
+      await bulkUpdateDivisions(ids, { deleted_at: null });
+      await loadDatas();
+    };
+  
+    const handleSort = async (sorter: any) => {
+      setQueryParam((prev) => {
+        return {
+          ...prev,
+          sort: sorter[0]?.column,
+          order: sorter[0]?.order,
+        };
+      });
+    };
 
   const divisionColumns = [
     {
@@ -83,7 +91,7 @@ export default function DivisionList() {
       title: "Kode",
       dataIndex: "code",
       editable: true,
-      placeholder: "Masukkan kode departemen",
+      placeholder: "Masukkan kode divisi",
       sorter: true,
       rules: [{ required: true, message: "Kode wajib diisi" }],
       renderCell(value: string) {
@@ -95,21 +103,9 @@ export default function DivisionList() {
       title: "Nama",
       dataIndex: "name",
       editable: true,
-      placeholder: "Masukkan nama posisi",
+      placeholder: "Masukkan nama divisi",
       rules: [{ required: true, message: "Nama wajib diisi" }],
       sorter: true,
-    },
-    {
-      key: "department_id",
-      title: "Departemen",
-      dataIndex: "department_id",
-      editable: true,
-      inputType: "select" as const,
-      placeholder: "Pilih departemen",
-      options: getOptions(departments),
-      rules: [{ required: true, message: "Departemen wajib diisi" }],
-      renderCell: (value: number) =>
-        getOptionsById(value, departments) || "---",
     },
   ];
 
@@ -126,7 +122,7 @@ export default function DivisionList() {
         onBulkDelete={handleBulkDelete}
         filterDeleted={handleFilterDeleted}
         onRestore={handleRestore}
-        loading={isLoadingDivisions}
+        loading={loading}
         addButtonText="Tambah Divisi"
         deleteConfirmTitle="Hapus divisi ini?"
         onChange={(pagination, filters, sorter) => {

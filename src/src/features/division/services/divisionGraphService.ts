@@ -1,54 +1,22 @@
+import { createCrudService } from "@/config/crudFactory";
 import { CreateDivisionDto, UpdateDivisionDto } from "../types/division.types";
 import { Division } from "@/types/data/division.types";
-import axiosInstance from '@/config/axios';
+import axiosInstance from "@/config/axios";
 
-const _PATH = "/divisions/graph";
+export const divisionService = {
+  ...createCrudService({
+    basePath: "/divisions/graph",
+    entity: {} as Division,
+    postDto: {} as CreateDivisionDto,
+    updateDto: {} as UpdateDivisionDto,
+  }),
 
-export const fetchDivisions = async (
-  params: Record<string, any> = {}
-): Promise<Division[]> => {
-  const response = await axiosInstance.get(_PATH, { params });
+  bulkCreate: (data: Omit<Division, "id">[]) =>
+    axiosInstance.post("/divisions/bulk-create", { data }),
 
-  if (Array.isArray(response.data)) {
-    return response.data;
-  }
+  bulkUpdate: (ids: number[], data: Partial<Division>) =>
+    axiosInstance.put("/divisions/bulk-update", { ids, data }),
 
-  if (response.data?.data && Array.isArray(response.data.data)) {
-    return response.data.data;
-  }
-
-  console.error('Unexpected API response format:', response.data);
-  return [];
+  bulkDelete: (ids: number[]) =>
+    axiosInstance.delete("/divisions/bulk-delete", { data: { ids } }),
 };
-
-export const fetchDivisionById = async (id: number, params: Record<string, any> = {}): Promise<Division> => {
-  const res = await axiosInstance.get(`${_PATH}/${id}`, { params });
-  return res.data.data;
-};
-
-export const createDivision = async (payload: CreateDivisionDto) => {
-  await axiosInstance.post(_PATH, payload);
-};
-
-export const updateDivision = async (id: number, payload: UpdateDivisionDto) => {
-  await axiosInstance.put(`${_PATH}/${id}`, payload);
-};
-
-export const deleteDivision = async (id: number) => {
-  await axiosInstance.delete(`${_PATH}/${id}`);
-};
-
-export const bulkCreateDivisions = async (data: Omit<Division, "id">[]) => {
-  await axiosInstance.post(`${_PATH}/bulk-create`, { data });
-};
-
-export const bulkUpdateDivisions = async (ids: number[], data: Partial<Division>) => {
-  await axiosInstance.put(`${_PATH}/bulk-update`, { ids, data });
-};
-
-export const bulkDeleteDivisions = async (ids: number[]) => {
-  await axiosInstance.delete(`${_PATH}/bulk-delete`, {
-    data: { ids },
-  });
-};
-

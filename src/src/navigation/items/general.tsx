@@ -30,16 +30,6 @@ export const generalGroup = (
       icon: <IdcardOutlined />,
       children: [
         {
-          key: `${_PREFIX}/level`,
-          module: MODULES._LEVEL,
-          label: "Level",
-        },
-        {
-          key: `${_PREFIX}/department`,
-          module: MODULES._DEPARTMENT,
-          label: "Departemen",
-        },
-        {
           key: `${_PREFIX}/division`,
           module: MODULES._DIVISION,
           label: "Divisi",
@@ -53,11 +43,6 @@ export const generalGroup = (
           key: `${_PREFIX}/division-graph`,
           module: MODULES._DIVISION,
           label: "Divisi Graph",
-        },
-        {
-          key: `${_PREFIX}/posisi`,
-          module: MODULES._POSITION,
-          label: "Posisi",
         },
         {
           key: `${_PREFIX}/title`,
