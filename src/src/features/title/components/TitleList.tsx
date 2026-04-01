@@ -153,7 +153,7 @@ export default function TitleList() {
       inputType: "color",
       placeholder: "Masukkan warna status",
       renderDataView: false,
-      rules: [{ required: true, message: "Warna harus diisi" }],
+      //rules: [{ required: true, message: "Warna harus diisi" }],
     },
   ];
 
