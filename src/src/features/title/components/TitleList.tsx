@@ -1,17 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
 import { useTitleActions } from "../hook/useTitle";
-import { departmentService } from "@/features/department/services/departmentService";
-import { levelService } from "@/features/level/services/levelService";
-import { positionService } from "@/features/position/services/positionService";
 import { TableBuilder } from "@/components/fragments/builder/TableBuilder";
 import type { Title } from "@/types/data/title.types";
-import type { Position } from "@/types/data/position.types";
-import type { Level } from "@/types/data/level.types";
-import type { Department } from "@/types/data/department.types";
 import { CustomColumnProps } from "@/types/props/column.types";
 import { renderTag } from "@/components/ui/Tag";
-import { getOptions, getOptionsById } from "@/lib/getOption";
 import { getSorterInfo } from "@/lib/tableHelper";
 
 export default function TitleList() {
@@ -26,30 +18,6 @@ export default function TitleList() {
     bulkUpdateTitles,
     bulkDeleteTitles,
   } = useTitleActions();
-  const [positions, setPositions] = useState<Position[]>([]);
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [levels, setLevels] = useState<Level[]>([]);
-
-  const loadRelatedDatas = async () => {
-    try {
-      const [departmentsRes, levelRes, positionRes] =
-        await Promise.all([
-          departmentService.local.getAll(),
-          levelService.local.getAll(),
-          positionService.local.getAll(),
-        ]);
-
-      setDepartments(departmentsRes.data.data);
-      setLevels(levelRes.data.data);
-      setPositions(positionRes.data.data);
-    } catch (error) {
-      console.error("Failed to load related data:", error);
-    }
-  };
-
-  useEffect(() => {
-    loadRelatedDatas();
-  }, []);
 
   const handleSort = (sorter: any) => {
     setTitleParams((prev) => ({
@@ -110,40 +78,6 @@ export default function TitleList() {
       placeholder: "Masukkan nama jabatan",
       rules: [{ required: true, message: "Nama jabatan harus diisi" }],
       sorter: true,
-    },
-    {
-      key: "level_id",
-      title: "Level",
-      dataIndex: "level_id",
-      editable: true,
-      inputType: "select" as const,
-      placeholder: "Pilih level",
-      options: getOptions(levels),
-      rules: [{ required: true, message: "Level harus dipilih" }],
-      renderCell: (value: number) => getOptionsById(value, levels),
-    },
-    {
-      key: "position_id",
-      title: "Posisi",
-      dataIndex: "position_id",
-      editable: true,
-      inputType: "select" as const,
-      placeholder: "Pilih posisi",
-      options: getOptions(positions),
-      rules: [{ required: true, message: "Posisi harus dipilih" }],
-      renderCell: (value: number) => {
-        if (!value) {
-          return "-";
-        }
-
-        const positionData = positions.find((position) => position.id === value);
-
-        if (positionData) {
-          return renderTag(positionData.name, positionData.color);
-        }
-
-        return "-";
-      },
     },
     {
       key: "color",

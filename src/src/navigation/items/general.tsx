@@ -34,16 +34,16 @@ export const generalGroup = (
           module: MODULES._DIVISION,
           label: "Divisi",
         },
-        {
-          key: `${_PREFIX}/division-sql`,
-          module: MODULES._DIVISION,
-          label: "Divisi SQL",
-        },
-        {
-          key: `${_PREFIX}/division-graph`,
-          module: MODULES._DIVISION,
-          label: "Divisi Graph",
-        },
+        // {
+        //   key: `${_PREFIX}/division-sql`,
+        //   module: MODULES._DIVISION,
+        //   label: "Divisi SQL",
+        // },
+        // {
+        //   key: `${_PREFIX}/division-graph`,
+        //   module: MODULES._DIVISION,
+        //   label: "Divisi Graph",
+        // },
         {
           key: `${_PREFIX}/title`,
           module: MODULES._TITLE,

@@ -24,7 +24,8 @@ export const SopDetail = () => {
   const id = parseInt(params.sopId as string);
 
   const { titles } = useTitleActions();
-  const { divisions: divisionsData } = useDivisionActions();
+  const { fetchDivisions } = useDivisionActions();
+  const [divisionsData, setDivisionsData] = useState<any[]>([]);
   const { updateSop, fetchSopById } = useSopActions();
   const [data, setData] = useState<Sop | null>(sop);
   const { hasViewOwnOnly } = useFilterRBAC();
@@ -38,6 +39,14 @@ export const SopDetail = () => {
       setData(sop);
     }
   }, [sop]);
+
+  useEffect(() => {
+    async function loadDivisions() {
+      const data = await fetchDivisions({ limit: 100 });
+      setDivisionsData(data);
+    }
+    loadDivisions();
+  }, []);
 
   const fields: FormProps[] = useMemo(() => [
     {

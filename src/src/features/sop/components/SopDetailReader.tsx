@@ -20,7 +20,7 @@ export const SopDetailReader = () => {
   const id = parseInt(params.sopId as string);
 
   const { titles } = useTitleActions();
-  const { divisions: divisionsData } = useDivisionActions();
+  const { fetchDivisions } = useDivisionActions();
   const { updateSop, fetchSopById } = useSopActions();
   const [titleDatas, setTitleDatas] = useState<any[]>([]);
   const [divisionDatas, setDivisionDatas] = useState<any[]>([]);
@@ -33,8 +33,15 @@ export const SopDetailReader = () => {
 
   useEffect(() => {
     setTitleDatas(titles);
-    setDivisionDatas(divisionsData);
-  }, [titles, divisionsData]);
+  }, [titles]);
+
+  useEffect(() => {
+    async function loadDivisions() {
+      const data = await fetchDivisions({ limit: 100 });
+      setDivisionDatas(data);
+    }
+    loadDivisions();
+  }, []);
 
   useEffect(() => {
     if (sop) {
