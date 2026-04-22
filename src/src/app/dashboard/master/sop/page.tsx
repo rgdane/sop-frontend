@@ -20,7 +20,6 @@ const Pages = () => {
   }, [searchParams]);
 
   return (
-    <PermissionProvider modules={MODULES._SOP}>
       <Tabs
         defaultActiveKey="1"
         activeKey={activeKey}
@@ -46,7 +45,6 @@ const Pages = () => {
           },
         ]}
       />
-    </PermissionProvider>
   );
 };
 

@@ -49,11 +49,11 @@ export const generalGroup = (
           module: MODULES._TITLE,
           label: "Jabatan",
         },
-        {
-          key: `${_PREFIX}/user`,
-          module: MODULES._USER,
-          label: "Karyawan",
-        },
+        // {
+        //   key: `${_PREFIX}/user`,
+        //   module: MODULES._USER,
+        //   label: "Karyawan",
+        // },
       ],
     }
   ],

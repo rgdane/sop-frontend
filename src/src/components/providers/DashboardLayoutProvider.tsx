@@ -1,6 +1,5 @@
 "use client";
-import { useAuthAction } from "@/features/auth/hook/useAuth";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 interface DashboardLayoutContextType {
   padding: string;
@@ -19,8 +18,6 @@ export const DashboardLayoutProvider = ({
   initialPadding?: string;
 }) => {
   const [padding, setPadding] = useState(initialPadding);
-  const { getCurrentUser } = useAuthAction();
-  const user = getCurrentUser();
 
   return (
     <DashboardLayoutContext.Provider value={{ padding, setPadding }}>

@@ -11,14 +11,12 @@ import Sider from "antd/es/layout/Sider";
 import { MenuOutlined } from "@ant-design/icons";
 import Button from "../ui/Button";
 import { getNavigationItems } from "@/navigation";
-import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import "@ant-design/v5-patch-for-react-19";
 import { Menu } from "../ui/Menu";
 import { useDispatch } from "react-redux";
 import { setCollapse } from "@/slice/layoutSlice";
 import Image from "next/image";
-import { useCookies } from "react-cookie";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -41,12 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const path = usePathname();
   const [ready, setReady] = useState(false);
 
-  const permissions = useSelector((state: RootState) => state.auth.permissions);
-  const [cookie] = useCookies(["user"]);
-  const userTargetId = parseInt(cookie.user?.id || "0");
-  const [urgentCount, setUrgentCount] = useState(0);
-
-  const navigationItems = getNavigationItems(permissions, urgentCount);
+  const navigationItems = getNavigationItems({}, 0);
 
   useLayoutEffect(() => {
     setReady(true);

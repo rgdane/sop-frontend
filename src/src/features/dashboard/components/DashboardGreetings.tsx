@@ -1,10 +1,8 @@
 import Button from "@/components/ui/Button";
-import { RootState } from "@/store";
 import { Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MdWavingHand, MdWbSunny, MdCloud, MdArrowOutward, MdNightsStay } from "react-icons/md";
-import { useSelector } from "react-redux";
 
 interface DashboardGreetingsProps {
   weatherInfo?: {
@@ -17,7 +15,7 @@ interface DashboardGreetingsProps {
 const DashboardGreetings = ({ weatherInfo }: DashboardGreetingsProps) => {
   const [now, setNow] = useState(new Date());
 
-  const name = useSelector((state: RootState) => state.auth.user?.name);
+  const name = "Guest";
   const hours = now.getHours();
   const time = hours < 12 ? "morning" : hours < 15 ? "noon" : hours < 18 ? "afternoon" : "evening";
   const router = useRouter();

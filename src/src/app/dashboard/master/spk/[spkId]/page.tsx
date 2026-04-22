@@ -31,7 +31,6 @@ const Pages = () => {
     },
   ];
   return (
-    <PermissionProvider modules={MODULES._SPK}>
       <PageSection title="Detail SPK">
         <ActivityLayout
           left={
@@ -47,7 +46,6 @@ const Pages = () => {
           menuItems={activityItems}
         />
       </PageSection>
-    </PermissionProvider>
   );
 };
 

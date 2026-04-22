@@ -40,7 +40,6 @@ const Pages = () => {
   ];
 
   return (
-    <PermissionProvider modules={MODULES._SOP}>
       <PageSection title="Detail SOP">
         <ActivityLayout
           left={
@@ -56,7 +55,6 @@ const Pages = () => {
           menuItems={activityItems}
         />
       </PageSection>
-    </PermissionProvider>
   );
 };
 

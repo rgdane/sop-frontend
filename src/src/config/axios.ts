@@ -1,4 +1,3 @@
-import { logout } from "@/features/auth/authSlice";
 import { store } from "@/store";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -24,9 +23,6 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      store.dispatch(logout());
-    }
     return Promise.reject(error);
   }
 );

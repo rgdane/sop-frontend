@@ -4,21 +4,13 @@ import { useToast } from "@/components/providers/ToastProvider";
 import { Spk } from "@/types/data/spk.types";
 import { spkService } from "../services/spkService";
 import { ResponseSpkDto } from "../types/spk.types";
-import { useAuthAction } from "@/features/auth/hook/useAuth";
-import { useFilterRBAC } from "@/hooks/useFilterRBAC";
 
 export const useSpkActions = () => {
   const [toast] = useToast();
-  const { getCurrentTitle } = useAuthAction();
-  const { hasViewOwnOnly } = useFilterRBAC();
-  const currentTitle = getCurrentTitle();
 
   const fetchSpks = async (
     params: Record<string, any> = {}
   ): Promise<ResponseSpkDto> => {
-    if (hasViewOwnOnly() && currentTitle?.id) {
-      params.title_id = currentTitle.id;
-    }
     const res = await spkService.local.getAll(params);
     const { data, total }: any = res.data;
 

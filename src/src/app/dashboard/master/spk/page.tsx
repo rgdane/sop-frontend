@@ -5,11 +5,9 @@ import SpkList from "@/features/spk/components/SpkList";
 
 const Pages = () => {
   return (
-    <PermissionProvider modules={MODULES._SPK}>
       <PageSection title="SPK">
         <SpkList />
       </PageSection>
-    </PermissionProvider>
   );
 };
 

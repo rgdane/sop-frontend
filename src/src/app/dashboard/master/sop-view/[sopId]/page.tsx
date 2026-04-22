@@ -8,12 +8,10 @@ import { SopDetailReader } from "@/features/sop/components/SopDetailReader";
 
 const Pages = () => {
   return (
-    <PermissionProvider modules={MODULES._SOP}>
       <PageSection title="Detail SOP">
         <SopDetailReader />
         <SopJobReaderList />
       </PageSection>
-    </PermissionProvider>
   );
 };
 

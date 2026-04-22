@@ -4,21 +4,13 @@ import { useToast } from "@/components/providers/ToastProvider";
 import { sopService } from "@/features/sop/services/sopService";
 import { Sop } from "@/types/data/sop.types";
 import { CreateSopDto, ResponseSopDto, UpdateSopDto } from "../types/sop.types";
-import { useAuthAction } from "@/features/auth/hook/useAuth";
-import { useFilterRBAC } from "@/hooks/useFilterRBAC";
 
 export const useSopActions = () => {
   const [toast] = useToast();
-  const { getCurrentTitle } = useAuthAction();
-  const { hasViewOwnOnly } = useFilterRBAC();
-  const currentTitle = getCurrentTitle();
 
   const fetchSops = async (
     params: Record<string, any> = {}
   ): Promise<ResponseSopDto> => {
-    if (hasViewOwnOnly() && currentTitle?.id) {
-      params.title_id = currentTitle.id;
-    }
     const res = await sopService.local.getAll(params);
     const { data, total }: any = res.data;
     return {

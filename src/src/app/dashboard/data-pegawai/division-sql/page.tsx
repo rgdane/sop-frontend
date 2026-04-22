@@ -5,11 +5,9 @@ import DivisionSqlList from "@/features/division/components/DivisionSqlList";
 
 const Pages = () => {
   return (
-    <PermissionProvider modules={MODULES._GENERAL}>
       <PageSection title="Divisi">
         <DivisionSqlList />
       </PageSection>
-    </PermissionProvider>
   );
 };
 

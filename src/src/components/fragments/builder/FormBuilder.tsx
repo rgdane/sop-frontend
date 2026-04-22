@@ -1,10 +1,7 @@
 import { usePermissions } from "@/components/providers/PermissionProvider";
 import Button from "@/components/ui/Button";
 import DatePicker from "@/components/ui/DatePicker";
-import { MODULES } from "@/constants/modules";
-import { ModulePermissions, useAuthAction } from "@/features/auth/hook/useAuth";
 import { capitalizeFirstLetter } from "@/lib/capitalize";
-import { checkPermission } from "@/lib/checkPermission";
 import { formatDateToIso } from "@/lib/formatDate";
 import { FormProps } from "@/types/props/form.types";
 import {
@@ -78,20 +75,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
   formName = "dynamic-form",
 }) => {
   const [isView, setIsView] = useState(editMode);
-  const { getCurrentPermissions } = useAuthAction();
-  const { modules } = usePermissions();
-
-  const currentPermissions = useMemo(() => {
-    if (!modules) return {};
-    const perms = getCurrentPermissions(modules) as ModulePermissions;
-    return perms ?? {};
-  }, [modules]);
-
-  const hasPermission = modules
-    ? modules === MODULES._GENERAL
-      ? true
-      : checkPermission(currentPermissions, permission || "")
-    : true;
+  const hasPermission = true;
 
   const [internalForm] = Form.useForm();
   const form = externalForm || internalForm;

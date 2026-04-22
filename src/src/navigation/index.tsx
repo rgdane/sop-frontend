@@ -15,11 +15,8 @@ export const getNavigationItems = (
   const rawItems: MenuItemTypes[] = [
     generalGroup(notificationCount),
     masterGroup,
-    securityGroup,
+    // securityGroup,
   ];
-  const filtered = rawItems
-    .map((item) => filterMenuByPermission(item, permissions))
-    .filter((item): item is MenuItemTypes => item !== null);
 
-  return convertNavigation(filtered);
+  return convertNavigation(rawItems);
 };

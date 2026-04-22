@@ -5,11 +5,9 @@ import TitleList from "@/features/title/components/TitleList";
 
 const Pages = () => {
   return (
-    <PermissionProvider modules={MODULES._TITLE}>
       <PageSection title="Jabatan">
         <TitleList />
       </PageSection>
-    </PermissionProvider>
   );
 };
 

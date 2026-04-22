@@ -8,12 +8,10 @@ import { SpkDetailReader } from "@/features/spk/components/SpkDetailReader";
 
 const Pages = () => {
   return (
-    <PermissionProvider modules={MODULES._SPK_TX}>
       <PageSection title="Detail SPK">
         <SpkDetailReader />
         <SpkJobReaderList />
       </PageSection>
-    </PermissionProvider>
   );
 };
 
