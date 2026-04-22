@@ -228,7 +228,6 @@ export default function SpkList() {
       title="Manajemen SPK"
       description="Kelola data SPK"
       redirectPage={`/dashboard/master/spk/`}
-      redirectModule={MODULES._SPK}
       datas={spk}
       columns={columns}
       onCreate={handleCreate}

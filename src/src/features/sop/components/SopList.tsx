@@ -230,7 +230,6 @@ export default function SopList() {
       title="Manajemen SOP"
       description="Kelola data sop"
       redirectPage={redirectPage}
-      redirectModule={MODULES._SOP}
       datas={sop || []}
       columns={columns}
       onCreate={handleCreate}

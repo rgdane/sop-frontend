@@ -15,6 +15,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { BenchmarkScenario } from "../services/benchmarkService";
+import SeederControlPanel from "./SeederControlPanel";
 
 export default function DashboardBenchmark() {
   const [loading, setLoading] = useState(false);
@@ -93,6 +94,8 @@ export default function DashboardBenchmark() {
           </p>
         </div>
       </div>
+
+      <SeederControlPanel />
 
       {/* Statistik Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

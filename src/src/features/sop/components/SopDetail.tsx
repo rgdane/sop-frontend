@@ -93,25 +93,25 @@ export const SopDetail = () => {
         );
       },
     },
-    {
-      name: "has_titles",
-      type: "multiselect",
-      label: "Kepemilikan SOP",
-      editable: true,
-      options: titles.map((opt: any) => ({
-        label: opt.name,
-        value: opt.id,
-      })),
-      rules: [
-        { required: false, message: "Posisi Kepemilikan SOP wajib diisi!" },
-      ],
-      props: {
-        placeholder: "Pilih Posisi Kepemilikan SOP",
-      },
-      renderView: (values: any[]) => (
-        <div className="mt-2">{renderTexts(values)}</div>
-      ),
-    },
+    // {
+    //   name: "has_titles",
+    //   type: "multiselect",
+    //   label: "Kepemilikan SOP",
+    //   editable: true,
+    //   options: titles.map((opt: any) => ({
+    //     label: opt.name,
+    //     value: opt.id,
+    //   })),
+    //   rules: [
+    //     { required: false, message: "Posisi Kepemilikan SOP wajib diisi!" },
+    //   ],
+    //   props: {
+    //     placeholder: "Pilih Posisi Kepemilikan SOP",
+    //   },
+    //   renderView: (values: any[]) => (
+    //     <div className="mt-2">{renderTexts(values)}</div>
+    //   ),
+    // },
     {
       name: "description",
       type: "description",
