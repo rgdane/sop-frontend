@@ -154,7 +154,7 @@ export default function DashboardBenchmark() {
         <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-bold text-gray-800">
-              Performa Latency (Beban 5 Detik)
+              Performa Latency (Beban 10 Detik)
             </h2>
             <span className="text-xs font-semibold px-2 py-1 bg-gray-100 text-gray-600 rounded">
               Dalam Milliseconds (ms) - Lebih rendah lebih baik
@@ -177,8 +177,8 @@ export default function DashboardBenchmark() {
                     }}
                   />
                   <Legend wrapperStyle={{ paddingTop: "20px" }} />
-                  <Bar dataKey="SQL" fill="#3B82F6" radius={[4, 4, 0, 0]} barSize={40} />
                   <Bar dataKey="Graph" fill="#10B981" radius={[4, 4, 0, 0]} barSize={40} />
+                  <Bar dataKey="SQL" fill="#3B82F6" radius={[4, 4, 0, 0]} barSize={40} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -202,13 +202,13 @@ export default function DashboardBenchmark() {
               <strong>Target:</strong> {getScenarioDescription()}
             </p>
             <p>
-              <strong>Rate:</strong> 50 request / detik
+              <strong>Rate:</strong> 500 request / detik
             </p>
             <p>
-              <strong>Durasi:</strong> 5 detik
+              <strong>Durasi:</strong> 10 detik
             </p>
             <p>
-              <strong>Total Request:</strong> 250 request per Database
+              <strong>Total Request:</strong> 5000 request per Database
             </p>
             <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 text-blue-800">
               💡 <strong>Info Metrik:</strong>

@@ -4,7 +4,7 @@ import { authMiddleware } from "./middlewares/auth";
 import { RedirectDashboard } from "./middlewares/redirect";
 
 export function middleware(request: NextRequest) {
-  return applyMiddleware(request, [authMiddleware, RedirectDashboard]);
+  return applyMiddleware(request, [RedirectDashboard]);
 }
 
 export const config = {
