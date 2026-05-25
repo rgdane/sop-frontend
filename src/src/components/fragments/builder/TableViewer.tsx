@@ -1,17 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Table, Button } from "antd";
-import { DownOutlined, RightOutlined, UpOutlined } from "@ant-design/icons";
-import type { ColumnsType, ColumnType } from "antd/es/table";
-import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import {
-  BaseRecord,
-  EditableRecord,
-  TableBuilderProps,
+    BaseRecord,
+    EditableRecord,
+    TableBuilderProps,
 } from "@/types/props/table.types";
+import { DownOutlined, EyeInvisibleOutlined, EyeOutlined, UpOutlined } from "@ant-design/icons";
+import { Button, Table } from "antd";
+import type { ColumnsType, ColumnType } from "antd/es/table";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { useEffect, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 dayjs.extend(customParseFormat);
@@ -63,7 +62,7 @@ export function TableViewer<T extends BaseRecord>({
   loading = false,
   redirectPage = null,
   rowProps,
-  redirectModule = "",
+  redirectmodule = "",
   onPaginate,
   showIndex = true,
   showDescriptionToggle = false,

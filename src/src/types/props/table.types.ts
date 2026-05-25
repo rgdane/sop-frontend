@@ -1,11 +1,10 @@
+import {
+    FilterValue,
+    SorterResult,
+    TablePaginationConfig
+} from "antd/es/table/interface";
 import React from "react";
 import type { CustomColumnProps } from "./column.types";
-import {
-  ColumnType,
-  FilterValue,
-  SorterResult,
-  TablePaginationConfig,
-} from "antd/es/table/interface";
 
 export interface BaseRecord {
   id: number;
@@ -89,7 +88,7 @@ export interface TableBuilderProps<T extends BaseRecord> {
   useColumnAction?: boolean;
   hideActions?: (record: T) => { hideEdit?: boolean; hideDelete?: boolean };
   redirectPage?: string | null;
-  redirectModule?: string;
+  redirectmodule?: string;
   onPaginate?: CustomPagination;
   customHeaderContent?: React.ReactNode;
   autoSave?: boolean;

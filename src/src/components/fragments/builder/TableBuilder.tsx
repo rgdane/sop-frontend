@@ -1,44 +1,44 @@
 "use client";
 
-import React, {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useCallback,
-  useContext,
-} from "react";
-import { Button, Table } from "antd";
-import type { ColumnsType, ColumnType } from "antd/es/table";
-import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
-import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import { DndContext } from "@dnd-kit/core";
+import { BulkActionBar } from "@/components/ui/Table/BulkActionBar";
+import ColumnSearch from "@/components/ui/Table/ColumnSearch";
+import { FooterAction } from "@/components/ui/Table/FooterAction";
+import { HeaderAction } from "@/components/ui/Table/HeaderAction";
+import { TableActions } from "@/components/ui/Table/TableAction";
+import { TableCell } from "@/components/ui/Table/TableCell";
+import { useTableActions } from "@/features/table/hook/useTableAction";
+import { useTableData } from "@/features/table/hook/useTableData";
+import { useTableEditing } from "@/features/table/hook/useTableEditing";
+import { useTableSelection } from "@/features/table/hook/useTableSelection";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
-  arrayMove,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
+    BaseRecord,
+    EditableRecord,
+    TableBuilderProps,
+} from "@/types/props/table.types";
+import { HolderOutlined } from "@ant-design/icons";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { DndContext } from "@dnd-kit/core";
+import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
+import {
+    arrayMove,
+    SortableContext,
+    useSortable,
+    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { HolderOutlined } from "@ant-design/icons";
-import {
-  BaseRecord,
-  EditableRecord,
-  TableBuilderProps,
-} from "@/types/props/table.types";
-import { TableCell } from "@/components/ui/Table/TableCell";
-import { TableActions } from "@/components/ui/Table/TableAction";
-import { HeaderAction } from "@/components/ui/Table/HeaderAction";
-import { BulkActionBar } from "@/components/ui/Table/BulkActionBar";
-import { FooterAction } from "@/components/ui/Table/FooterAction";
+import { Button, Table } from "antd";
+import type { ColumnsType, ColumnType } from "antd/es/table";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { useIsMobile } from "@/hooks/useIsMobile";
-import { useTableActions } from "@/features/table/hook/useTableAction";
-import { useTableSelection } from "@/features/table/hook/useTableSelection";
-import { useTableEditing } from "@/features/table/hook/useTableEditing";
-import { useTableData } from "@/features/table/hook/useTableData";
-import ColumnSearch from "@/components/ui/Table/ColumnSearch";
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 
 dayjs.extend(customParseFormat);
 
@@ -170,7 +170,7 @@ export function TableBuilder<T extends BaseRecord>({
   hideActions,
   redirectPage = null,
   rowProps,
-  redirectModule = "",
+  redirectmodule = "",
   onPaginate,
   autoSave = false,
   rowClickUpdate = false,
@@ -736,7 +736,7 @@ export function TableBuilder<T extends BaseRecord>({
           <div className="flex">
             <TableActions
               isFilterDeleted={isFilterDeleted}
-              redirectModule={redirectModule}
+              redirectmodule={redirectmodule}
               useDelete={useDelete}
               useEdit={useEdit}
               record={record}
@@ -791,7 +791,7 @@ export function TableBuilder<T extends BaseRecord>({
       editingIds,
       draggingRowIndex,
       isFilterDeleted,
-      redirectModule,
+      redirectmodule,
       useDelete,
       columns,
       useModal,
@@ -838,7 +838,7 @@ export function TableBuilder<T extends BaseRecord>({
       editingIds,
       draggingRowIndex,
       isFilterDeleted,
-      redirectModule,
+      redirectmodule,
       useDelete,
       columns,
       useModal,

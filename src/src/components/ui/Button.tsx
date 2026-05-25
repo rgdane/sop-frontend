@@ -5,7 +5,7 @@ import "@ant-design/v5-patch-for-react-19";
 import { Button as ButtonAntd } from "antd";
 
 type Props = ButtonProps & {
-  redirectModule?: string;
+  redirectmodule?: string;
 };
 
 export default function Button(props: Props) {

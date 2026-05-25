@@ -1,5 +1,5 @@
 import axiosInstance from "@/config/axios";
-import { Benchmark } from "@/types/data/benchmark.types";
+import { Benchmark, DashboardCounts } from "@/types/data/benchmark.types";
 
 // Buat union type untuk memastikan pilihan skenario valid
 export type BenchmarkScenario = 'divisions' | 'sops' | 'sop-jobs';
@@ -11,4 +11,7 @@ export const benchmarkService = {
   
   runTestGraph: (scenario: BenchmarkScenario) => 
     axiosInstance.get<{ data: Benchmark }>(`/benchmark/${scenario}/graph`),
+
+  getDashboardCounts: () =>
+    axiosInstance.get<{ data: DashboardCounts }>('/dashboard/counts'),
 };

@@ -1,23 +1,23 @@
 "use client";
+import { useToast } from "@/components/providers/ToastProvider";
+import { CustomModal } from "@/components/ui/Modal/CustomModal";
+import { InputTypeProps } from "@/types/props/input.type";
 import { BaseRecord, EditableRecord } from "@/types/props/table.types";
 import {
-  CloseOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  EyeOutlined,
-  CheckOutlined,
-  InfoCircleOutlined,
+    CheckOutlined,
+    CloseOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    EyeOutlined,
+    InfoCircleOutlined,
 } from "@ant-design/icons";
 import { Popconfirm } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import Button from "../Button";
-import { useToast } from "@/components/providers/ToastProvider";
-import { EditModal } from "../Modal/EditModal";
-import { EditDrawer } from "../Drawer/EditDrawer";
-import { InputTypeProps } from "@/types/props/input.type";
 import { TbRestore, TbTrash } from "react-icons/tb";
-import { CustomModal } from "@/components/ui/Modal/CustomModal";
+import Button from "../Button";
+import { EditDrawer } from "../Drawer/EditDrawer";
+import { EditModal } from "../Modal/EditModal";
 
 interface TableActionsProps<T extends BaseRecord> {
   isFilterDeleted?: boolean;
@@ -55,7 +55,7 @@ interface TableActionsProps<T extends BaseRecord> {
   hideDelete?: boolean;
   redirectPage?: string | null;
   onSaveNew?: (record: EditableRecord & T) => Promise<void>;
-  redirectModule?: string;
+  redirectmodule?: string;
   onRestore?: (record: EditableRecord & T) => Promise<void>;
   customModal?: any;
   onActions?: (record: EditableRecord & T) => void;
@@ -81,7 +81,7 @@ export function TableActions<T extends BaseRecord>({
   hideDelete = false,
   redirectPage,
   onSaveNew,
-  redirectModule,
+  redirectmodule,
   onRestore,
   customModal,
   onActions = () => { }
@@ -206,7 +206,7 @@ export function TableActions<T extends BaseRecord>({
           <div className="flex gap-2">
             {redirectPage && (
               <Button
-                redirectModule={redirectModule}
+                redirectmodule={redirectmodule}
                 onClick={handleRedirect}
                 permission="view"
                 icon={<EyeOutlined />}

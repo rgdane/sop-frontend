@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useBenchmarkActions } from "../hook/useBenchmark";
-import StatCard from "./StatCard";
-import { Select } from "antd"; // <-- Import Ant Design Select
+import { useDashboardCounts } from "../hook/useDashboardCounts";
+import { Select } from "antd";
+import { DashboardCounts } from "@/types/data/benchmark.types";
 
 // 1. Import komponen dari recharts
 import {
@@ -19,6 +20,8 @@ import SeederControlPanel from "./SeederControlPanel";
 
 export default function DashboardBenchmark() {
   const [loading, setLoading] = useState(false);
+  const [countsLoading, setCountsLoading] = useState(false);
+  const [counts, setCounts] = useState<DashboardCounts | null>(null);
 
   // 2. State untuk menyimpan data grafik
   const [chartData, setChartData] = useState<any[]>([]);
@@ -26,14 +29,32 @@ export default function DashboardBenchmark() {
   // State untuk memilih skenario
   const [selectedScenario, setSelectedScenario] = useState<BenchmarkScenario>('divisions');
   const { runSqlBenchmark, runGraphBenchmark } = useBenchmarkActions();
+  const { getDashboardCounts } = useDashboardCounts();
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      setCountsLoading(true);
+      const data = await getDashboardCounts();
+      setCounts(data);
+      setCountsLoading(false);
+    };
+    fetchCounts();
+  }, []);
+
+  const formatNumber = (num: number | undefined) => {
+    if (num === undefined || num === null) return "0";
+    return num.toLocaleString("id-ID");
+  };
 
   // Helper: Format latency ke ms
   const parseLatencyToMs = (timeStr: string) => {
     if (!timeStr) return 0;
-    if (timeStr.includes("µs")) return parseFloat(timeStr) / 1000;
-    if (timeStr.includes("ms")) return parseFloat(timeStr);
-    if (timeStr.includes("s")) return parseFloat(timeStr) * 1000;
-    return parseFloat(timeStr);
+    let result: number;
+    if (timeStr.includes("µs")) result = parseFloat(timeStr) / 1000;
+    else if (timeStr.includes("ms")) result = parseFloat(timeStr);
+    else if (timeStr.includes("s")) result = parseFloat(timeStr) * 1000;
+    else result = parseFloat(timeStr);
+    return parseFloat(result.toFixed(2));
   };
 
   const handleTest = async () => {
@@ -97,14 +118,97 @@ export default function DashboardBenchmark() {
 
       <SeederControlPanel />
 
-      {/* Statistik Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <StatCard title="Total Divisi" value="12" icon="🏢" color="border-yellow-100 bg-yellow-50/50" />
-        <StatCard title="Total SOP" value="148" icon="📄" color="border-purple-100 bg-purple-50/50" />
-        <StatCard title="Total SPK" value="148" icon="📄" color="border-green-100 bg-green-50/50" />
-        <StatCard title="Total Jabatan" value="120" icon="✅" color="border-yellow-100 bg-yellow-50/50" />
-        <StatCard title="Total SOP Job" value="45" icon="👥" color="border-purple-100 bg-purple-50/50" />
-        <StatCard title="Total SPK Job" value="45" icon="👥" color="border-green-100 bg-green-50/50" />
+      {/* Statistik Cards - SQL vs Graph */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* SQL Database Card */}
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200 shadow-sm">
+          <h3 className="text-lg font-bold text-blue-800 mb-4 flex items-center gap-2">
+            <span className="text-2xl">🗄️</span> Database SQL (PostgreSQL)
+          </h3>
+          {countsLoading ? (
+            <div className="flex items-center justify-center h-48">
+              <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+            </div>
+          ) : counts ? (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Divisions</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.sql_divisions)}</p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Titles</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.sql_titles)}</p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">SOPs</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.sql_sops)}</p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">SOP Jobs</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.sql_sop_jobs)}</p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">SPKs</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.sql_spks)}</p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">SPK Jobs</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.sql_spk_jobs)}</p>
+              </div>
+              <div className="col-span-2 bg-blue-600 text-white p-4 rounded-lg text-center">
+                <p className="text-xs text-blue-200 mb-1">Total Records</p>
+                <p className="text-3xl font-bold">{formatNumber(counts.sql_total)}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center text-gray-500 py-8">Gagal memuat data</div>
+          )}
+        </div>
+
+        {/* Graph Database Card */}
+        <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 p-6 rounded-xl border border-emerald-200 shadow-sm">
+          <h3 className="text-lg font-bold text-emerald-800 mb-4 flex items-center gap-2">
+            <span className="text-2xl">🔗</span> Database Graph (Neo4j)
+          </h3>
+          {countsLoading ? (
+            <div className="flex items-center justify-center h-48">
+              <div className="animate-spin h-8 w-8 border-4 border-emerald-500 border-t-transparent rounded-full"></div>
+            </div>
+          ) : counts ? (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Divisions</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.graph_divisions)}</p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Titles</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.graph_titles)}</p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">SOPs</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.graph_sops)}</p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Jobs</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.graph_jobs)}</p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">SPKs</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.graph_spks)}</p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Flowcharts</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.graph_flowcharts)}</p>
+              </div>
+              <div className="col-span-2 bg-emerald-600 text-white p-4 rounded-lg text-center">
+                <p className="text-xs text-emerald-200 mb-1">Total Records</p>
+                <p className="text-3xl font-bold">{formatNumber(counts.graph_total)}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center text-gray-500 py-8">Gagal memuat data</div>
+          )}
+        </div>
       </div>
 
       {/* Tombol Action & Dropdown Skenario */}
@@ -154,7 +258,7 @@ export default function DashboardBenchmark() {
         <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-bold text-gray-800">
-              Performa Latency (Beban 10 Detik)
+              Performa Latency (Beban 5 Detik)
             </h2>
             <span className="text-xs font-semibold px-2 py-1 bg-gray-100 text-gray-600 rounded">
               Dalam Milliseconds (ms) - Lebih rendah lebih baik
@@ -202,13 +306,13 @@ export default function DashboardBenchmark() {
               <strong>Target:</strong> {getScenarioDescription()}
             </p>
             <p>
-              <strong>Rate:</strong> 500 request / detik
+              <strong>Rate:</strong> 100 request / detik
             </p>
             <p>
-              <strong>Durasi:</strong> 10 detik
+              <strong>Durasi:</strong> 5 detik
             </p>
             <p>
-              <strong>Total Request:</strong> 5000 request per Database
+              <strong>Total Request:</strong> 500 request per Database
             </p>
             <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 text-blue-800">
               💡 <strong>Info Metrik:</strong>
