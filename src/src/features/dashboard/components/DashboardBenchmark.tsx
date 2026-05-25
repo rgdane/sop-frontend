@@ -252,23 +252,23 @@ export default function DashboardBenchmark() {
         </button>
       </div>
 
-      {/* Area Konten Utama */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Chart Area */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col">
+      {/* Area Konten Utama - 2 Chart Terpisah */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Chart Database Latency */}
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-bold text-gray-800">
-              Performa Latency (Beban 5 Detik)
+              Database Latency
             </h2>
             <span className="text-xs font-semibold px-2 py-1 bg-gray-100 text-gray-600 rounded">
-              Dalam Milliseconds (ms) - Lebih rendah lebih baik
+              Dalam ms - Lebih rendah lebih baik
             </span>
           </div>
 
           <div className="flex-1 min-h-[300px] w-full">
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <BarChart data={chartData.filter(d => d.name === "Database Latency")} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} />
                   <YAxis axisLine={false} tickLine={false} />
@@ -279,48 +279,90 @@ export default function DashboardBenchmark() {
                       border: "none",
                       boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     }}
+                    formatter={(value: number) => [`${value.toFixed(2)} ms`, "Latency"]}
                   />
                   <Legend wrapperStyle={{ paddingTop: "20px" }} />
-                  <Bar dataKey="Graph" fill="#10B981" radius={[4, 4, 0, 0]} barSize={40} />
-                  <Bar dataKey="SQL" fill="#3B82F6" radius={[4, 4, 0, 0]} barSize={40} />
+                  <Bar dataKey="Graph" fill="#10B981" name="Graph (Neo4j)" radius={[4, 4, 0, 0]} barSize={40} />
+                  <Bar dataKey="SQL" fill="#3B82F6" name="SQL (PostgreSQL)" radius={[4, 4, 0, 0]} barSize={40} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
               <div className="h-full rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center flex-col gap-2">
-                <span className="text-4xl">📊</span>
+                <span className="text-4xl">🗄️</span>
                 <p className="text-sm text-gray-400 font-medium">
-                  Pilih skenario dan klik "Mulai Benchmark" untuk melihat perbandingan
+                  Jalankan benchmark untuk melihat hasil
                 </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Side Area */}
-        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-800 mb-6">
-            Informasi Skenario
-          </h2>
-          <div className="text-sm text-gray-600 space-y-3">
-            <p>
-              <strong>Target:</strong> {getScenarioDescription()}
-            </p>
-            <p>
-              <strong>Rate:</strong> 100 request / detik
-            </p>
-            <p>
-              <strong>Durasi:</strong> 5 detik
-            </p>
-            <p>
-              <strong>Total Request:</strong> 500 request per Database
-            </p>
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 text-blue-800">
-              💡 <strong>Info Metrik:</strong>
-              <br />• <strong>Database Latency:</strong> Waktu rata-rata yang
-              dibutuhkan database merespon.
-              <br />• <strong>Backend Latency:</strong> Waktu rata-rata yang
-              dibutuhkan server merespon.
-            </div>
+        {/* Chart Backend Latency */}
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-lg font-bold text-gray-800">
+              Backend Latency
+            </h2>
+            <span className="text-xs font-semibold px-2 py-1 bg-gray-100 text-gray-600 rounded">
+              Dalam ms - Lebih rendah lebih baik
+            </span>
+          </div>
+
+          <div className="flex-1 min-h-[300px] w-full">
+            {chartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData.filter(d => d.name === "Backend Latency")} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} />
+                  <YAxis axisLine={false} tickLine={false} />
+                  <Tooltip
+                    cursor={{ fill: "#F3F4F6" }}
+                    contentStyle={{
+                      borderRadius: "8px",
+                      border: "none",
+                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    }}
+                    formatter={(value: number) => [`${value.toFixed(2)} ms`, "Latency"]}
+                  />
+                  <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                  <Bar dataKey="Graph" fill="#10B981" name="Graph (Neo4j)" radius={[4, 4, 0, 0]} barSize={40} />
+                  <Bar dataKey="SQL" fill="#3B82F6" name="SQL (PostgreSQL)" radius={[4, 4, 0, 0]} barSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center flex-col gap-2">
+                <span className="text-4xl">⚡</span>
+                <p className="text-sm text-gray-400 font-medium">
+                  Jalankan benchmark untuk melihat hasil
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Side Area */}
+      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+        <h2 className="text-lg font-bold text-gray-800 mb-6">
+          Informasi Skenario
+        </h2>
+        <div className="text-sm text-gray-600 space-y-3">
+          <p>
+            <strong>Target:</strong> {getScenarioDescription()}
+          </p>
+          <p>
+            <strong>Rate:</strong> 100 request / detik
+          </p>
+          <p>
+            <strong>Durasi:</strong> 5 detik
+          </p>
+          <p>
+            <strong>Total Request:</strong> 500 request per Database
+          </p>
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 text-blue-800">
+            💡 <strong>Info Metrik:</strong>
+            <br />• <strong>Database Latency:</strong> Waktu yang dibutuhkan database merespon.
+            <br />• <strong>Backend Latency:</strong> Waktu yang dibutuhkan server merespon (termasuk network overhead).
           </div>
         </div>
       </div>
