@@ -2,7 +2,7 @@ import axiosInstance from "@/config/axios";
 import { Benchmark, DashboardCounts } from "@/types/data/benchmark.types";
 
 // Buat union type untuk memastikan pilihan skenario valid
-export type BenchmarkScenario = 'divisions' | 'sops' | 'sop-jobs';
+export type BenchmarkScenario = 'divisions' | 'sops' | 'sop-jobs' | 'first' | 'second' | 'third' | 'fourth' | 'fifth' ;
 
 export const benchmarkService = {
   // Terima parameter scenario dan masukkan ke dalam URL

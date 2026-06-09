@@ -27,7 +27,8 @@ export default function DashboardBenchmark() {
   const [chartData, setChartData] = useState<any[]>([]);
 
   // State untuk memilih skenario
-  const [selectedScenario, setSelectedScenario] = useState<BenchmarkScenario>('divisions');
+  const [selectedScenario, setSelectedScenario] =
+    useState<BenchmarkScenario>("divisions");
   const { runSqlBenchmark, runGraphBenchmark } = useBenchmarkActions();
   const { getDashboardCounts } = useDashboardCounts();
 
@@ -116,55 +117,10 @@ export default function DashboardBenchmark() {
         </div>
       </div>
 
-      <SeederControlPanel />
+      {/* <SeederControlPanel /> */}
 
       {/* Statistik Cards - SQL vs Graph */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* SQL Database Card */}
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200 shadow-sm">
-          <h3 className="text-lg font-bold text-blue-800 mb-4 flex items-center gap-2">
-            <span className="text-2xl">🗄️</span> Database SQL (PostgreSQL)
-          </h3>
-          {countsLoading ? (
-            <div className="flex items-center justify-center h-48">
-              <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-            </div>
-          ) : counts ? (
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/60 p-4 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">Divisions</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.sql_divisions)}</p>
-              </div>
-              <div className="bg-white/60 p-4 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">Titles</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.sql_titles)}</p>
-              </div>
-              <div className="bg-white/60 p-4 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">SOPs</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.sql_sops)}</p>
-              </div>
-              <div className="bg-white/60 p-4 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">SOP Jobs</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.sql_sop_jobs)}</p>
-              </div>
-              <div className="bg-white/60 p-4 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">SPKs</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.sql_spks)}</p>
-              </div>
-              <div className="bg-white/60 p-4 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">SPK Jobs</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.sql_spk_jobs)}</p>
-              </div>
-              <div className="col-span-2 bg-blue-600 text-white p-4 rounded-lg text-center">
-                <p className="text-xs text-blue-200 mb-1">Total Records</p>
-                <p className="text-3xl font-bold">{formatNumber(counts.sql_total)}</p>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center text-gray-500 py-8">Gagal memuat data</div>
-          )}
-        </div>
-
         {/* Graph Database Card */}
         <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 p-6 rounded-xl border border-emerald-200 shadow-sm">
           <h3 className="text-lg font-bold text-emerald-800 mb-4 flex items-center gap-2">
@@ -178,35 +134,112 @@ export default function DashboardBenchmark() {
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-white/60 p-4 rounded-lg">
                 <p className="text-xs text-gray-500 mb-1">Divisions</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.graph_divisions)}</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(counts.graph_divisions)}
+                </p>
               </div>
               <div className="bg-white/60 p-4 rounded-lg">
                 <p className="text-xs text-gray-500 mb-1">Titles</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.graph_titles)}</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(counts.graph_titles)}
+                </p>
               </div>
               <div className="bg-white/60 p-4 rounded-lg">
                 <p className="text-xs text-gray-500 mb-1">SOPs</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.graph_sops)}</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(counts.graph_sops)}
+                </p>
               </div>
               <div className="bg-white/60 p-4 rounded-lg">
                 <p className="text-xs text-gray-500 mb-1">Jobs</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.graph_jobs)}</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(counts.graph_jobs)}
+                </p>
               </div>
               <div className="bg-white/60 p-4 rounded-lg">
                 <p className="text-xs text-gray-500 mb-1">SPKs</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.graph_spks)}</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(counts.graph_spks)}
+                </p>
               </div>
               <div className="bg-white/60 p-4 rounded-lg">
                 <p className="text-xs text-gray-500 mb-1">Flowcharts</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(counts.graph_flowcharts)}</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(counts.graph_flowcharts)}
+                </p>
               </div>
               <div className="col-span-2 bg-emerald-600 text-white p-4 rounded-lg text-center">
                 <p className="text-xs text-emerald-200 mb-1">Total Records</p>
-                <p className="text-3xl font-bold">{formatNumber(counts.graph_total)}</p>
+                <p className="text-3xl font-bold">
+                  {formatNumber(counts.graph_total)}
+                </p>
               </div>
             </div>
           ) : (
-            <div className="text-center text-gray-500 py-8">Gagal memuat data</div>
+            <div className="text-center text-gray-500 py-8">
+              Gagal memuat data
+            </div>
+          )}
+        </div>
+
+        {/* SQL Database Card */}
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200 shadow-sm">
+          <h3 className="text-lg font-bold text-blue-800 mb-4 flex items-center gap-2">
+            <span className="text-2xl">🗄️</span> Database SQL (PostgreSQL)
+          </h3>
+          {countsLoading ? (
+            <div className="flex items-center justify-center h-48">
+              <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+            </div>
+          ) : counts ? (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Divisions</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(counts.sql_divisions)}
+                </p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Titles</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(counts.sql_titles)}
+                </p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">SOPs</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(counts.sql_sops)}
+                </p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">SOP Jobs</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(counts.sql_sop_jobs)}
+                </p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">SPKs</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(counts.sql_spks)}
+                </p>
+              </div>
+              <div className="bg-white/60 p-4 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">SPK Jobs</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(counts.sql_spk_jobs)}
+                </p>
+              </div>
+              <div className="col-span-2 bg-blue-600 text-white p-4 rounded-lg text-center">
+                <p className="text-xs text-blue-200 mb-1">Total Records</p>
+                <p className="text-3xl font-bold">
+                  {formatNumber(counts.sql_total)}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center text-gray-500 py-8">
+              Gagal memuat data
+            </div>
           )}
         </div>
       </div>
@@ -221,9 +254,14 @@ export default function DashboardBenchmark() {
           disabled={loading}
           className="w-full sm:w-[260px]" // Atur lebar agar pas di mobile dan desktop
           options={[
-            { value: "divisions", label: "Skenario Sederhana (Divisi)" },
-            { value: "sops", label: "Skenario Menengah (SOP)" },
-            { value: "sop-jobs", label: "Skenario Kompleks (SOP Jobs)" },
+            // { value: "divisions", label: "Skenario Sederhana (Divisi)" },
+            // { value: "sops", label: "Skenario Menengah (SOP)" },
+            // { value: "sop-jobs", label: "Skenario Kompleks (SOP Jobs)" },
+            { value: "first", label: "Skenario Pertama" },
+            { value: "second", label: "Skenario Kedua" },
+            { value: "third", label: "Skenario Ketiga" },
+            { value: "fourth", label: "Skenario Keempat" },
+            { value: "fifth", label: "Skenario Kelima" },
           ]}
         />
 
@@ -241,8 +279,19 @@ export default function DashboardBenchmark() {
                 fill="none"
                 viewBox="0 0 24 24"
               >
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Menjalankan Test...
             </>
@@ -268,8 +317,15 @@ export default function DashboardBenchmark() {
           <div className="flex-1 min-h-[300px] w-full">
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData.filter(d => d.name === "Database Latency")} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                <BarChart
+                  data={chartData.filter((d) => d.name === "Database Latency")}
+                  margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke="#E5E7EB"
+                  />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} />
                   <YAxis axisLine={false} tickLine={false} />
                   <Tooltip
@@ -279,11 +335,26 @@ export default function DashboardBenchmark() {
                       border: "none",
                       boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     }}
-                    formatter={(value: number) => [`${value.toFixed(2)} ms`, "Latency"]}
+                    formatter={(value) => [
+                      typeof value === "number" ? `${value.toFixed(2)} ms` : value,
+                      "Latency",
+                    ]}
                   />
                   <Legend wrapperStyle={{ paddingTop: "20px" }} />
-                  <Bar dataKey="Graph" fill="#10B981" name="Graph (Neo4j)" radius={[4, 4, 0, 0]} barSize={40} />
-                  <Bar dataKey="SQL" fill="#3B82F6" name="SQL (PostgreSQL)" radius={[4, 4, 0, 0]} barSize={40} />
+                  <Bar
+                    dataKey="Graph"
+                    fill="#10B981"
+                    name="Graph (Neo4j)"
+                    radius={[4, 4, 0, 0]}
+                    barSize={40}
+                  />
+                  <Bar
+                    dataKey="SQL"
+                    fill="#3B82F6"
+                    name="SQL (PostgreSQL)"
+                    radius={[4, 4, 0, 0]}
+                    barSize={40}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -300,9 +371,7 @@ export default function DashboardBenchmark() {
         {/* Chart Backend Latency */}
         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-bold text-gray-800">
-              Backend Latency
-            </h2>
+            <h2 className="text-lg font-bold text-gray-800">Backend Latency</h2>
             <span className="text-xs font-semibold px-2 py-1 bg-gray-100 text-gray-600 rounded">
               Dalam ms - Lebih rendah lebih baik
             </span>
@@ -311,8 +380,15 @@ export default function DashboardBenchmark() {
           <div className="flex-1 min-h-[300px] w-full">
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData.filter(d => d.name === "Backend Latency")} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                <BarChart
+                  data={chartData.filter((d) => d.name === "Backend Latency")}
+                  margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke="#E5E7EB"
+                  />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} />
                   <YAxis axisLine={false} tickLine={false} />
                   <Tooltip
@@ -322,11 +398,26 @@ export default function DashboardBenchmark() {
                       border: "none",
                       boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     }}
-                    formatter={(value: number) => [`${value.toFixed(2)} ms`, "Latency"]}
+                    formatter={(value) => [
+                      typeof value === "number" ? `${value.toFixed(2)} ms` : value,
+                      "Latency",
+                    ]}
                   />
                   <Legend wrapperStyle={{ paddingTop: "20px" }} />
-                  <Bar dataKey="Graph" fill="#10B981" name="Graph (Neo4j)" radius={[4, 4, 0, 0]} barSize={40} />
-                  <Bar dataKey="SQL" fill="#3B82F6" name="SQL (PostgreSQL)" radius={[4, 4, 0, 0]} barSize={40} />
+                  <Bar
+                    dataKey="Graph"
+                    fill="#10B981"
+                    name="Graph (Neo4j)"
+                    radius={[4, 4, 0, 0]}
+                    barSize={40}
+                  />
+                  <Bar
+                    dataKey="SQL"
+                    fill="#3B82F6"
+                    name="SQL (PostgreSQL)"
+                    radius={[4, 4, 0, 0]}
+                    barSize={40}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -361,8 +452,10 @@ export default function DashboardBenchmark() {
           </p>
           <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 text-blue-800">
             💡 <strong>Info Metrik:</strong>
-            <br />• <strong>Database Latency:</strong> Waktu yang dibutuhkan database merespon.
-            <br />• <strong>Backend Latency:</strong> Waktu yang dibutuhkan server merespon (termasuk network overhead).
+            <br />• <strong>Database Latency:</strong> Waktu yang dibutuhkan
+            database merespon.
+            <br />• <strong>Backend Latency:</strong> Waktu yang dibutuhkan
+            server merespon (termasuk network overhead).
           </div>
         </div>
       </div>
