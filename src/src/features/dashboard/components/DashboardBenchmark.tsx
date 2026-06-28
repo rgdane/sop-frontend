@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useBenchmarkActions } from "../hook/useBenchmark";
 import { useDashboardCounts } from "../hook/useDashboardCounts";
-import { Select } from "antd";
+import { Select, InputNumber } from "antd";
 import { DashboardCounts } from "@/types/data/benchmark.types";
 
 // 1. Import komponen dari recharts
@@ -16,7 +16,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { BenchmarkScenario } from "../services/benchmarkService";
-import SeederControlPanel from "./SeederControlPanel";
+// import SeederControlPanel from "./SeederControlPanel";
 
 export default function DashboardBenchmark() {
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,9 @@ export default function DashboardBenchmark() {
 
   // State untuk memilih skenario
   const [selectedScenario, setSelectedScenario] =
-    useState<BenchmarkScenario>("divisions");
+    useState<BenchmarkScenario>("first");
+  const [rate, setRate] = useState<number>(100);
+  const [duration, setDuration] = useState<number>(5);
   const { runSqlBenchmark, runGraphBenchmark } = useBenchmarkActions();
   const { getDashboardCounts } = useDashboardCounts();
 
@@ -61,9 +63,9 @@ export default function DashboardBenchmark() {
   const handleTest = async () => {
     setLoading(true);
     try {
-      // Jalankan test SQL & Graph berdasarkan skenario yang dipilih
-      const sqlData = await runSqlBenchmark(selectedScenario);
-      const graphData = await runGraphBenchmark(selectedScenario);
+      const payload = { rate, duration };
+      const graphData = await runGraphBenchmark(selectedScenario, payload);
+      const sqlData = await runSqlBenchmark(selectedScenario, payload);
 
       // 3. Format hasil ke bentuk array object yang dibaca oleh Recharts
       const formattedData = [
@@ -91,12 +93,16 @@ export default function DashboardBenchmark() {
   // Helper untuk menampilkan info dinamis di Sidebar
   const getScenarioDescription = () => {
     switch (selectedScenario) {
-      case "divisions":
-        return "GET /divisions (Tabel tunggal, minim relasi)";
-      case "sops":
-        return "GET /sops (Relasi menengah ke tabel Divisi)";
-      case "sop-jobs":
-        return "GET /sop-jobs (Relasi kompleks, struktur Linked-List)";
+      case "first":
+        return "GET /first (Endpoint pertama)";
+      case "second":
+        return "GET /second (Endpoint kedua)";
+      case "third":
+        return "GET /third (Endpoint ketiga)";
+      case "fourth":
+        return "GET /fourth (Endpoint keempat)";
+      case "fifth":
+        return "GET /fifth (Endpoint kelima)";
       default:
         return "Endpoint Get All Data";
     }
@@ -252,11 +258,8 @@ export default function DashboardBenchmark() {
           value={selectedScenario}
           onChange={(value) => setSelectedScenario(value as BenchmarkScenario)}
           disabled={loading}
-          className="w-full sm:w-[260px]" // Atur lebar agar pas di mobile dan desktop
+          className="w-full sm:w-[260px]"
           options={[
-            // { value: "divisions", label: "Skenario Sederhana (Divisi)" },
-            // { value: "sops", label: "Skenario Menengah (SOP)" },
-            // { value: "sop-jobs", label: "Skenario Kompleks (SOP Jobs)" },
             { value: "first", label: "Skenario Pertama" },
             { value: "second", label: "Skenario Kedua" },
             { value: "third", label: "Skenario Ketiga" },
@@ -264,6 +267,32 @@ export default function DashboardBenchmark() {
             { value: "fifth", label: "Skenario Kelima" },
           ]}
         />
+
+        {/* Input Rate */}
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-gray-600 whitespace-nowrap">Rate:</label>
+          <InputNumber
+            min={1}
+            value={rate}
+            onChange={(value) => setRate(value ?? 100)}
+            disabled={loading}
+            className="w-50"
+            addonAfter="req/detik"
+          />
+        </div>
+
+        {/* Input Duration */}
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-gray-600 whitespace-nowrap">Duration:</label>
+          <InputNumber
+            min={1}
+            value={duration}
+            onChange={(value) => setDuration(value ?? 5)}
+            disabled={loading}
+            className="w-50"
+            addonAfter="detik"
+          />
+        </div>
 
         {/* Tombol Benchmark */}
         <button
@@ -442,13 +471,13 @@ export default function DashboardBenchmark() {
             <strong>Target:</strong> {getScenarioDescription()}
           </p>
           <p>
-            <strong>Rate:</strong> 100 request / detik
+            <strong>Rate:</strong> {rate} request / detik
           </p>
           <p>
-            <strong>Durasi:</strong> 5 detik
+            <strong>Durasi:</strong> {duration} detik
           </p>
           <p>
-            <strong>Total Request:</strong> 500 request per Database
+            <strong>Total Request:</strong> {rate * duration} request per Database
           </p>
           <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 text-blue-800">
             💡 <strong>Info Metrik:</strong>

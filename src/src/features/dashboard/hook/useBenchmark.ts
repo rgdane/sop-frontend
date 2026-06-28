@@ -1,15 +1,15 @@
 "use client";
 
 import { useToast } from "@/components/providers/ToastProvider";
-import { benchmarkService, BenchmarkScenario } from "../services/benchmarkService";
+import { benchmarkService, BenchmarkScenario, BenchmarkPayload } from "../services/benchmarkService";
 import { Benchmark } from "@/types/data/benchmark.types";
 
 export const useBenchmarkActions = () => {
   const [toast] = useToast();
 
-  const runSqlBenchmark = async (scenario: BenchmarkScenario): Promise<Benchmark> => {
+  const runSqlBenchmark = async (scenario: BenchmarkScenario, payload: BenchmarkPayload): Promise<Benchmark> => {
     try {
-      const res = await benchmarkService.runTestSQL(scenario);
+      const res = await benchmarkService.runTestSQL(scenario, payload);
       
       toast.success({ 
         message: `Benchmark SQL (${scenario}) berhasil diselesaikan!` 
@@ -25,9 +25,9 @@ export const useBenchmarkActions = () => {
     }
   };
 
-  const runGraphBenchmark = async (scenario: BenchmarkScenario): Promise<Benchmark> => {
+  const runGraphBenchmark = async (scenario: BenchmarkScenario, payload: BenchmarkPayload): Promise<Benchmark> => {
     try {
-      const res = await benchmarkService.runTestGraph(scenario);
+      const res = await benchmarkService.runTestGraph(scenario, payload);
       
       toast.success({ 
         message: `Benchmark Graph (${scenario}) berhasil diselesaikan!` 
