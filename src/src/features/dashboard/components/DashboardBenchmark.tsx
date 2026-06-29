@@ -75,9 +75,9 @@ export default function DashboardBenchmark() {
           Graph: graphData.db_mean_latency_ms,
         },
         {
-          name: "Backend Latency",
-          SQL: parseLatencyToMs(sqlData.vegeta_mean_latency),
-          Graph: parseLatencyToMs(graphData.vegeta_mean_latency),
+          name: "Success Rate",
+          SQL: sqlData.success_rate,
+          Graph: graphData.success_rate,
         },
       ];
 
@@ -94,17 +94,103 @@ export default function DashboardBenchmark() {
   const getScenarioDescription = () => {
     switch (selectedScenario) {
       case "first":
-        return "GET /first (Endpoint pertama)";
+        return "Mencari data pekerjaan yang secara spesifik ditugaskan untuk jabatan (Job Title) 'Software Engineer'.";
       case "second":
-        return "GET /second (Endpoint kedua)";
+        return "Mencari dan menampilkan daftar tugas yang berada di bawah naungan dokumen milik divisi 'Product'.";
       case "third":
-        return "GET /third (Endpoint ketiga)";
+        return "Mencari tugas-tugas di bawah divisi 'Product' yang eksekusinya secara spesifik didelegasikan kepada 'Engineering Manager'.";
       case "fourth":
-        return "GET /fourth (Endpoint keempat)";
+        return "Menelusuri semua tugas (Job) yang di dalam kontennya memuat rujukan (referencing) ke dokumen SOP lain yang merupakan milik divisi 'Engineering'.";
       case "fifth":
-        return "GET /fifth (Endpoint kelima)";
+        return "Mencari tugas operasional yang sudah dipublikasikan (aktif), memuat frasa teks \"mengoptimalkan\", bernaung di bawah divisi 'Product', ditugaskan kepada jabatan dengan kode warna label '#FF5733', dan memiliki rujukan ke dokumen lain, dengan hasil keluaran yang diurutkan berdasarkan indeks urutan kerja.";
       default:
-        return "Endpoint Get All Data";
+        return "Skenario belum dipilih. Silakan pilih skenario untuk melihat deskripsi.";
+    }
+  };
+
+  const getScenarioQueries = () => {
+    switch (selectedScenario) {
+      case "first":
+        return {
+          sql: `SELECT j.id, j.name, j.type, j.code, j.index
+FROM sop_jobs j
+JOIN titles t ON t.id = j.title_id
+WHERE t.name = 'Engineer'
+LIMIT 100;`,
+          neo4j: `MATCH (j:Job)-[:ASSIGNED_TO]->(t:Title)
+WHERE t.name = 'Engineer'
+RETURN j.id AS id, j.name AS name, j.type AS type, j.code AS code, j.index AS index
+LIMIT 100;`,
+        };
+      case "second":
+        return {
+          sql: `SELECT j.id, j.name, j.type, j.code, j.index 
+FROM sop_jobs j 
+JOIN sops s ON s.id = j.sop_id 
+JOIN sop_divisions sd ON sd.sop_id = s.id 
+JOIN divisions d ON d.id = sd.division_id 
+WHERE d.name = 'Product' 
+LIMIT 100;`,
+          neo4j: `MATCH (d:Division)-[:HAS_SOP]->(s:SOP)-[:HAS_JOB]->(j:Job) 
+WHERE d.name = 'Product' 
+RETURN j.id AS id, j.name AS name, j.type AS type, j.code AS code, j.index AS index 
+LIMIT 100;`,
+        };
+      case "third":
+        return {
+          sql: `SELECT j.id, j.name, j.type, j.code, j.index 
+FROM sop_jobs j 
+JOIN sops s ON s.id = j.sop_id 
+JOIN sop_divisions sd ON sd.sop_id = s.id 
+JOIN divisions d ON d.id = sd.division_id 
+JOIN titles t ON t.id = j.title_id 
+WHERE d.name = 'Product' AND t.name = 'Engineering Manager' 
+LIMIT 100;`,
+          neo4j: `MATCH (d:Division)-[:HAS_SOP]->(s:SOP)-[:HAS_JOB]->(j:Job), (j)-[:ASSIGNED_TO]->(t:Title) 
+WHERE d.name = 'Product' AND t.name = 'Engineering Manager' 
+RETURN j.id AS id, j.name AS name, j.type AS type, j.code AS code, j.index AS index 
+LIMIT 100;`,
+        };
+      case "fourth":
+        return {
+          sql: `SELECT j.id, j.name, j.type, j.code, j.index 
+FROM sop_jobs j 
+JOIN sops ref_sops ON ref_sops.id = j.reference_id AND j.type = 'sop' 
+JOIN sop_divisions sd ON sd.sop_id = ref_sops.id 
+JOIN divisions d ON d.id = sd.division_id 
+WHERE d.name = 'Engineering' 
+LIMIT 100;`,
+          neo4j: `MATCH (j:Job)-[:HAS_REFERENCE]->(ref:SOP)<-[:HAS_SOP]-(d:Division) 
+WHERE d.name = 'Engineering' 
+RETURN j.id AS id, j.name AS name, j.type AS type, j.code AS code, j.index AS index 
+LIMIT 100;`,
+        };
+      case "fifth":
+        return {
+          sql: `SELECT j.id, j.name, j.type, j.code, j.index 
+FROM sop_jobs j 
+JOIN sops s ON s.id = j.sop_id 
+JOIN sop_divisions sd ON sd.sop_id = s.id AND j.type = 'spk' 
+JOIN divisions d ON d.id = sd.division_id 
+JOIN spks spk ON spk.id = j.reference_id 
+WHERE d.name = 'Product' 
+  AND j.name LIKE '%mengoptimalkan%' 
+  AND j.is_published = true 
+  AND spk.name = '%tim%' 
+  AND j.reference_id IS NOT NULL 
+ORDER BY j.index ASC 
+LIMIT 100;`,
+          neo4j: `(d:Division)-[:HAS_SOP]->(s:SOP)-[:HAS_JOB]->(j:Job)-[:HAS_REFERENCE]->(ref:SPK)
+WHERE d.name = 'Product' 
+  AND j.name CONTAINS 'mengoptimalkan' 
+  AND j.is_published = true 
+  AND ref.name CONTAINS 'tim' 
+RETURN j.id AS id, j.name AS name, j.type AS type, j.code AS code, j.index AS index 
+ORDER BY index ASC 
+LIMIT 100;`,
+        };
+      default:
+        return { sql: "", neo4j: "" };
     }
   };
 
@@ -400,9 +486,9 @@ export default function DashboardBenchmark() {
         {/* Chart Backend Latency */}
         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-bold text-gray-800">Backend Latency</h2>
+            <h2 className="text-lg font-bold text-gray-800">Success Rate</h2>
             <span className="text-xs font-semibold px-2 py-1 bg-gray-100 text-gray-600 rounded">
-              Dalam ms - Lebih rendah lebih baik
+              Dalam % - Lebih tinggi lebih baik
             </span>
           </div>
 
@@ -410,7 +496,7 @@ export default function DashboardBenchmark() {
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  data={chartData.filter((d) => d.name === "Backend Latency")}
+                  data={chartData.filter((d) => d.name === "Success Rate")}
                   margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
                 >
                   <CartesianGrid
@@ -428,8 +514,8 @@ export default function DashboardBenchmark() {
                       boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     }}
                     formatter={(value) => [
-                      typeof value === "number" ? `${value.toFixed(2)} ms` : value,
-                      "Latency",
+                      typeof value === "number" ? `${value.toFixed(2)} %` : value,
+                      "Success Rate",
                     ]}
                   />
                   <Legend wrapperStyle={{ paddingTop: "20px" }} />
@@ -468,7 +554,7 @@ export default function DashboardBenchmark() {
         </h2>
         <div className="text-sm text-gray-600 space-y-3">
           <p>
-            <strong>Target:</strong> {getScenarioDescription()}
+            <strong>Deskripsi:</strong> {getScenarioDescription()}
           </p>
           <p>
             <strong>Rate:</strong> {rate} request / detik
@@ -479,12 +565,26 @@ export default function DashboardBenchmark() {
           <p>
             <strong>Total Request:</strong> {rate * duration} request per Database
           </p>
+          <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="bg-slate-800 rounded-lg p-4">
+              <p className="text-xs font-semibold text-emerald-400 mb-2">Neo4j Query</p>
+              <pre className="text-xs text-blue-400 whitespace-pre-wrap font-mono overflow-x-auto">
+                {getScenarioQueries().neo4j}
+              </pre>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4">
+              <p className="text-xs font-semibold text-blue-400 mb-2">PostgreSQL Query</p>
+              <pre className="text-xs text-green-400 whitespace-pre-wrap font-mono overflow-x-auto">
+                {getScenarioQueries().sql}
+              </pre>
+            </div>
+          </div>
           <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 text-blue-800">
             💡 <strong>Info Metrik:</strong>
             <br />• <strong>Database Latency:</strong> Waktu yang dibutuhkan
             database merespon.
-            <br />• <strong>Backend Latency:</strong> Waktu yang dibutuhkan
-            server merespon (termasuk network overhead).
+            <br />• <strong>Success Rate:</strong> Persentase request yang berhasil diproses
+            oleh server (termasuk network overhead).
           </div>
         </div>
       </div>
